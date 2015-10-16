@@ -45,6 +45,7 @@ RigidBody* PhysicsSystem::AddSphere( vec2 const& pos, f32 radius )
     
     body->forces = { 0.f, 0.f };
     body->im = 1.f; // 1 kg
+    body->m = 1.f;
     body->iI = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
@@ -62,6 +63,7 @@ RigidBody* PhysicsSystem::AddBox( vec2 const& pos, vec2 const& dims )
     
     body->forces = { 0.f, 0.f };
     body->im = 1.f; // 1 kg
+    body->m = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
     
