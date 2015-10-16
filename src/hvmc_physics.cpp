@@ -2,12 +2,6 @@
 
 void RigidBody::Update( f32 dt )
 {
-    /*
-     *notes funky, mais apparemment on s'en tape de update de rigidbody
-    ai = 1/m * Somme(Fi);
-    v(i+1) = vi + dt*ai;
-    x(i+1) = xi + dt*v(i+1);
-    */
     vec2 acc = im * forces;
     velocity += dt*acc;
     position += dt*velocity;
