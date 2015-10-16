@@ -1,0 +1,10 @@
+build/*
+deps/*
+
+# Normalement ce sont les conneries de qt creator
+# ça dépend donc du nom de votre projet
+*.config
+*.creator*
+#*.creator.user
+*.files
+*.includes
