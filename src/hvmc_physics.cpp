@@ -1,16 +1,13 @@
 #include "hvmc_physics.h"
 
+
 void RigidBody::Update( f32 dt )
 {
-    /*
-     *notes funky, mais apparemment on s'en tape de update de rigidbody
-    ai = 1/m * Somme(Fi);
-    v(i+1) = vi + dt*ai;
-    x(i+1) = xi + dt*v(i+1);
-    */
+
     vec2 acc = im * forces;
     velocity += dt*acc;
     position += dt*velocity;
+    rotation += rotation*dt;
 }
 
 void RigidBody::ApplyForce( vec2 const& f )
@@ -18,8 +15,15 @@ void RigidBody::ApplyForce( vec2 const& f )
     forces+=f;
 }
 
+/*void RigidBody::ApplyVelocity( f32 dt )
+{
+    position+=velocity*dt;
+    rotation+=rotation*dt;
+}*/
+
 void RigidBody::ApplyImpulse( vec2 const& impulse, vec2 const& contactVector )
 {
+//velocity+=(velocity+impulse),contactVector;
 }
 
 void RigidBody::SetKinematic()
@@ -45,6 +49,7 @@ RigidBody* PhysicsSystem::AddSphere( vec2 const& pos, f32 radius )
     
     body->forces = { 0.f, 0.f };
     body->im = 1.f; // 1 kg
+    body->m = 1.f;
     body->iI = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
@@ -61,7 +66,8 @@ RigidBody* PhysicsSystem::AddBox( vec2 const& pos, vec2 const& dims )
     RigidBody* body = new RigidBody; 
     
     body->forces = { 0.f, 0.f };
-    body->im = 1.f; // 1 kg
+    body->im = 1.f; // 1 kg*
+    body->m = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
     
@@ -91,7 +97,10 @@ void PhysicsSystem::Update( f32 dt )
     //add gravity
     for (RigidBody* rb : rigidBodies){
         rb->ApplyForce(rb->m * gravity);
+        rb->ApplyImpulse({ 0.f, -9.81f },{ 0.f, -9.81f });
+
         rb->Update(dt);
+        rb->forces={0.0 , 0.0};
     }
 
     //generate contact infos
@@ -111,7 +120,7 @@ void PhysicsSystem::Update( f32 dt )
          }
          //integrate velocities
          for(){
-            rb.integratevelocities(dt); //position+=v*dt; rotation+=w*dt;
+            rb->Appl(dt); //position+=v*dt; rotation+=w*dt;
          }
          //clear forces
          for(){

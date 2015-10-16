@@ -32,6 +32,7 @@ struct RigidBody
     
     void ApplyForce( vec2 const& force );
     void ApplyImpulse( vec2 const& impulse, vec2 const& contactVector );
+    void ApplyVelocity( f32 dt );
     
     void SetKinematic();
     void SetGravityMode( int mode );
