@@ -1,4 +1,5 @@
 #include "hvmc_physics.h"
+#include "iostream"
 
 void RigidBody::Update( f32 dt )
 {
@@ -88,18 +89,24 @@ void PhysicsSystem::Update( f32 dt )
     for (RigidBody* rb : rigidBodies){
         rb->ApplyForce(rb->m * gravity);
         rb->Update(dt);
+        rb->forces = {0.0,0.0};
     }
+    u32 count = rigidBodies.size();
 
     //generate contact infos
-    /*for (RigidBody* rb1 : rigidBodies){
-        for (RigidBody* rb2 : rigidBodies){
-
+    for (u32 i = 0; i< count -1; i++){
+        for (u32 j = i+1; j < count; j++){
               CollisionInfo info;
-              if ( Collider(a,b,info)
-                collisions.push_back(info);
+              RigidBody * rb1 = rigidBodies[i];
+              RigidBody * rb2 = rigidBodies[j];
 
-        }
+              if (collider(rb1,rb2,info)){
+                //collisions.push_back(info);
+                      std::cout << "collisions" << std::endl;
 
+                }
+
+/*
          //Integrate Forces
          for (RigidBody* rb : rigidBodies){
             rb->IntegrateForces(dt); // linearVelocity+=a*dt;
@@ -113,9 +120,9 @@ void PhysicsSystem::Update( f32 dt )
          for(){
              rb.forces = {0.0,0.0};
              rb.torque = 0.0;
-         }
+         }*/
 
+        }
     }
-    }*/
 }
 
