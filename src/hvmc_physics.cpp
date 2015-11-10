@@ -1,11 +1,13 @@
 #include "hvmc_physics.h"
 #include "iostream"
 
+
 void RigidBody::Update( f32 dt )
 {
     vec2 acc = im * forces;
     velocity += dt*acc;
     position += dt*velocity;
+    rotation += rotation*dt;
 }
 
 void RigidBody::ApplyForce( vec2 const& f )
@@ -13,8 +15,15 @@ void RigidBody::ApplyForce( vec2 const& f )
     forces+=f;
 }
 
+/*void RigidBody::ApplyVelocity( f32 dt )
+{
+    position+=velocity*dt;
+    rotation+=rotation*dt;
+}*/
+
 void RigidBody::ApplyImpulse( vec2 const& impulse, vec2 const& contactVector )
 {
+//velocity+=(velocity+impulse),contactVector;
 }
 
 void RigidBody::SetKinematic()
@@ -57,6 +66,7 @@ RigidBody* PhysicsSystem::AddBox( vec2 const& pos, vec2 const& dims )
     RigidBody* body = new RigidBody; 
     
     body->forces = { 0.f, 0.f };
+    
     body->im = 1.f; // 1 kg
     body->m = 1.f;
     body->position = pos;
@@ -89,6 +99,8 @@ void PhysicsSystem::Update( f32 dt )
     //add gravity
     for (RigidBody* rb : rigidBodies){
         rb->ApplyForce(rb->m * gravity);
+        rb->ApplyImpulse({ 0.f, -9.81f },{ 0.f, -9.81f });
+
         rb->Update(dt);
         rb->forces = {0.0,0.0};
     }
@@ -115,7 +127,7 @@ void PhysicsSystem::Update( f32 dt )
          }
          //integrate velocities
          for(){
-            rb.integratevelocities(dt); //position+=v*dt; rotation+=w*dt;
+            rb->Appl(dt); //position+=v*dt; rotation+=w*dt;
          }
          //clear forces
          for(){
