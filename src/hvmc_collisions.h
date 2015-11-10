@@ -6,6 +6,7 @@
 
 #endif
 struct RigidBody;
+struct CollisionInfo;
 
 /*struct CollisionInfo{ //happen to be previously declared i don't know where
     //be my guest
@@ -13,11 +14,7 @@ struct RigidBody;
     int blablabla;
 };*/
 
-struct CollisionInfo;//{ //happen to be previously declared i don't know where
-    //be my guest
-    //add whatever you want
-    //int blablabla;
-//};
+//struct CollisionInfo;
 
 
 //test collision between a and b, gives an info
@@ -32,7 +29,7 @@ bool collisionCircle2Circle(RigidBody * circle1, RigidBody * circle2, CollisionI
 //test collision box to circle
 bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & info);
 
-bool collisionWithWall(RigidBody * a, RigidBody * b, CollisionInfo & info);
+bool collisionWithWall(CollisionInfo & info);
 
 
 //std::vector<CollisionInfo*> collisions; //collisions.push_back(info);

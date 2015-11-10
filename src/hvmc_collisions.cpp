@@ -24,17 +24,21 @@ bool collider(RigidBody * a, RigidBody * b, CollisionInfo & info){
 
 //test collision box to box
 bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
-    //vec2 taille = box1->collider.dims;
-    //f32 minAy = box1->position.y - taille.y/2;
-    //f32 minAx = box1->position.x - taille.x/2;
-    //f32 maxAx = box1->position.x + taille.x/2;
-    //f32 maxAy = box1->position.y + taille.y/2;
-    //f32 minBy = box2->position.y - taille.y/2;
-    //f32 minBx = box2->position.x - taille.x/2;
-    //f32 maxBx = box2->position.x + taille.x/2;
-    //f32 maxBy = box2->position.y + taille.y/2;
+    vec2 taille = box1->collider.dims;
+    f32 minAy = box1->position.y - taille.y/2;
+    f32 minAx = box1->position.x - taille.x/2;
+    f32 maxAx = box1->position.x + taille.x/2;
+    f32 maxAy = box1->position.y + taille.y/2;
+    f32 minBy = box2->position.y - taille.y/2;
+    f32 minBx = box2->position.x - taille.x/2;
+    f32 maxBx = box2->position.x + taille.x/2;
+    f32 maxBy = box2->position.y + taille.y/2;
 
-    if (false){
+    if ((((minAx>minBx)&&(minAx<maxBx))&&((minAy>minBy)&&(minAy<maxBy)))||
+            ((((maxAx>minBx)&&(maxAx<maxBx))&&((maxAy>minBy)&&(maxAy<maxBy))))||
+            (((minAx>minBx)&&(minAx<maxBx))&&((maxAy>minBy)&&(maxAy<maxBy)))||
+            (((maxAx>minBx)&&(maxAx<maxBx))&&((minAy>minBy)&&(minAy<maxBy)))
+            ){
         std::cout << "BOX2BOX" << std::endl;
         box1->velocity = {0.0,0.0};
         box2->velocity = {0.0,0.0};
@@ -71,6 +75,64 @@ bool collisionCircle2Circle(RigidBody * circle1, RigidBody * circle2, CollisionI
 //test collision box to circle
 bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & info){
     //std::cout << "BOX2CIRCLE" << std::endl;
+    f32 rayon = circle->collider.radius;
+    f32 rayon2 = rayon * rayon;
+    f32 by = circle->position.y;
+    f32 bx = circle->position.x;
+    vec2 taille = box->collider.dims;
+    f32 minAy = box->position.y - taille.y/2;
+    f32 minAx = box->position.x - taille.x/2;
+    f32 maxAx = box->position.x + taille.x/2;
+    f32 maxAy = box->position.y + taille.y/2;
+
+    f32 py;
+    f32 px;
+    f32 p;
+    f32 pmin=1000000000;
+
+    // Recherche du point p, étant le point le plus près du centre b de la boite
+    for (f32 i = minAx; i<= maxAx; i++){
+        if (i == minAx || i == maxAx) {
+             for (f32 j = minAy; j <= maxAy; j++){
+
+                 p=sqrt( pow((i-bx),2) + pow((j-by),2) );
+                 if (p<pmin){
+                     pmin=p;
+                     px=i;
+                     py=j;
+                 }
+             }
+        }
+        else {
+            for (f32 j = minAy; j <= maxAy;){
+
+
+                    p=sqrt( pow((i-bx),2) + pow((j-by),2) );
+                    if (p<pmin){
+                        pmin=p;
+                        px=i;
+                        py=j;
+                    }
+                    j+=taille.y;
+             }
+         }
+    }
+
+
+    f32 norme2 = sqrt( ((px-bx)*(px-bx)) + ((py-by)*(py-by)) );
+    norme2 *= norme2;
+
+    if (norme2   < rayon2) {
+        //std::cout << "C2B" << std::endl;
+        circle->velocity = {0.0,0.0};
+        box->velocity = {0.0,0.0};
+        circle->SetKinematic();
+        box->SetKinematic();
+        return true;
+    }
+
+
+
     return false;
 }
 bool collisionWithWall(CollisionInfo & info){

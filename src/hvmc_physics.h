@@ -9,7 +9,13 @@ enum RigidBodyType
 {
     RIGID_BODY_SPHERE,
     RIGID_BODY_BOX,
-    RIGID_BODY_WALL, /*added this to differenciate wall from others, walls don't MOVE !!!*/
+    //RIGID_BODY_WALL, /*added this to differenciate wall from others, walls don't MOVE !!!*/
+};
+
+struct CollisionInfo{ //happen to be previously declared i don't know where
+    //be my guest
+    //add whatever you want
+    int blablabla;
 };
 
 struct Collider
