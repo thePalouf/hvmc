@@ -1,9 +1,13 @@
 #include "hvmc_physics.h"
+#include "iostream"
 
 
 void RigidBody::Update( f32 dt )
 {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 759dd90fb62f6412ee68cb495fc8a625c2086748
     vec2 acc = im * forces;
     velocity += dt*acc;
     position += dt*velocity;
@@ -66,7 +70,8 @@ RigidBody* PhysicsSystem::AddBox( vec2 const& pos, vec2 const& dims )
     RigidBody* body = new RigidBody; 
     
     body->forces = { 0.f, 0.f };
-    body->im = 1.f; // 1 kg*
+    
+    body->im = 1.f; // 1 kg
     body->m = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
@@ -85,7 +90,7 @@ RigidBody* PhysicsSystem::AddWall( vec2 const& pos, vec2 const& dims )
     body->im = 0.f;
     body->position = pos;
 
-    body->collider.type = RIGID_BODY_BOX;
+    body->collider.type = RIGID_BODY_WALL;
     body->collider.dims = dims;
 
     rigidBodies.push_back( body );
@@ -100,19 +105,24 @@ void PhysicsSystem::Update( f32 dt )
         rb->ApplyImpulse({ 0.f, -9.81f },{ 0.f, -9.81f });
 
         rb->Update(dt);
-        rb->forces={0.0 , 0.0};
+        rb->forces = {0.0,0.0};
     }
+    u32 count = rigidBodies.size();
 
     //generate contact infos
-    /*for (RigidBody* rb1 : rigidBodies){
-        for (RigidBody* rb2 : rigidBodies){
-
+    for (u32 i = 0; i< count -1; i++){
+        for (u32 j = i+1; j < count; j++){
               CollisionInfo info;
-              if ( Collider(a,b,info)
-                collisions.push_back(info);
+              RigidBody * rb1 = rigidBodies[i];
+              RigidBody * rb2 = rigidBodies[j];
 
-        }
+              if (collider(rb1,rb2,info)){
+                //collisions.push_back(info);
+                      std::cout << "collisions" << std::endl;
 
+                }
+
+/*
          //Integrate Forces
          for (RigidBody* rb : rigidBodies){
             rb->IntegrateForces(dt); // linearVelocity+=a*dt;
@@ -126,9 +136,9 @@ void PhysicsSystem::Update( f32 dt )
          for(){
              rb.forces = {0.0,0.0};
              rb.torque = 0.0;
-         }
+         }*/
 
+        }
     }
-    }*/
 }
 

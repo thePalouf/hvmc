@@ -9,6 +9,7 @@ enum RigidBodyType
 {
     RIGID_BODY_SPHERE,
     RIGID_BODY_BOX,
+    RIGID_BODY_WALL, /*added this to differenciate wall from others, walls don't MOVE !!!*/
 };
 
 struct Collider
