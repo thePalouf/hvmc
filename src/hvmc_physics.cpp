@@ -4,10 +4,6 @@
 
 void RigidBody::Update( f32 dt )
 {
-<<<<<<< HEAD
-
-=======
->>>>>>> 759dd90fb62f6412ee68cb495fc8a625c2086748
     vec2 acc = im * forces;
     velocity += dt*acc;
     position += dt*velocity;
