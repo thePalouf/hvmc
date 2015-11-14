@@ -43,6 +43,22 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
         box1->velocity = {0.0,0.0};
         box2->velocity = {0.0,0.0};
         box1->SetKinematic();box2->SetKinematic();
+        /*collision infos*/
+        info.rb1 = box1;
+        info.rb2 = box2;
+        info.p_contact = {f32(sqrt(pow(box1->position.x - box2->position.x,2))/2),f32(sqrt(pow(box1->position.y - box2->position.y,2))/2)};
+        info.dp = 42; //on s'en balaicouilles pour l'instant
+
+  /*      if ( && minBy > maxAy )
+            info.norm = {1,0};
+        else if (  && minAy > maxBy )
+            info.norm = {-1,0};
+        else if (  && minBx > maxAx )
+            info.norm = {0,1};
+        else if (  && minAx > maxBx )
+            info.norm = {0,-1};
+*/
+
         return true;
     }
     else
@@ -64,6 +80,14 @@ bool collisionCircle2Circle(RigidBody * circle1, RigidBody * circle2, CollisionI
         circle1->velocity = {0.0,0.0};
         circle2->velocity = {0.0,0.0};
         circle1->SetKinematic();circle2->SetKinematic();
+
+        /*collision infos*/
+        info.rb1 = circle1;
+        info.rb2 = circle2;
+        info.dp = rayon2 + rayon1 - sqrt(pow(circle1->position.x - circle2->position.x,2) + pow(circle1->position.y - circle2->position.y,2));
+        info.norm = {(circle2->position.x - circle1->position.x) / abs(circle2->position.x - circle1->position.x),
+                     (circle2->position.y - circle1->position.y) / abs(circle2->position.y - circle1->position.y)};
+        info.p_contact = {circle1->position.x + rayon1 * info.norm.x , circle1->position.y + rayon1 * info.norm.y};
         return true;
     }
     else
@@ -128,6 +152,13 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
         box->velocity = {0.0,0.0};
         circle->SetKinematic();
         box->SetKinematic();
+
+        /*collision infos*/
+        info.rb1 = box;
+        info.rb2 = circle;
+        info.p_contact = {f32(sqrt(pow(box->position.x - circle->position.x,2))/2),f32(sqrt(pow(box->position.y - circle->position.y,2))/2)};
+        info.dp = 42; //on s'en balaicouilles pour l'instant
+
         return true;
     }
 
