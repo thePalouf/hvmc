@@ -29,7 +29,7 @@ bool collisionCircle2Circle(RigidBody * circle1, RigidBody * circle2, CollisionI
 //test collision box to circle
 bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & info);
 
-bool collisionWithWall(CollisionInfo & info);
+bool collisionWithWall(RigidBody * rb1, RigidBody * rb2,CollisionInfo & info);
 
 
 //std::vector<CollisionInfo*> collisions; //collisions.push_back(info);

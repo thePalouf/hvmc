@@ -5,11 +5,11 @@
 
 void RigidBody::Update( f32 dt )
 {
-    vec2 acc = im * forces;
+   /* vec2 acc = im * forces;
     velocity += dt*acc;
-    /*position += dt*velocity;
-    rotation += rotation*dt;*/
-    ApplyVelocity(dt);
+    position += dt*velocity;
+    rotation += rotation*dt;
+    ApplyVelocity(dt);*/
 }
 
 void RigidBody::ApplyForce( vec2 const& f )
@@ -132,7 +132,7 @@ void CollisionInfo::Solve()
         f32 J = (-(1 + e) * (Dot(vrel,norm))) / (rb1->im + rb2->im + rb1->iI*(Cross(rA,norm)) + rb2->iI*(Cross(rB,norm)));
 
         vec2 JA = -J*norm;
-        vec2 JB = -JA;
+        vec2 JB = J*norm;
 
         rb1->ApplyImpulse(JA,p_contact);
         rb2->ApplyImpulse(JB,p_contact);
@@ -144,11 +144,13 @@ void PhysicsSystem::Update( f32 dt )
     //add gravity
     for (RigidBody* rb : rigidBodies){
         rb->ApplyForce(rb->m * gravity);
-        rb->ApplyImpulse({ 0.f, -9.81f },{ 0.f, -9.81f });
+        //rb->ApplyImpulse({ 0.f, -9.81f },{ 0.f, -9.81f });
 
-        rb->Update(dt);
-        rb->forces = {0.0,0.0};
+        //rb->Update(dt);
+        //rb->forces = {0.0,0.0};
     }
+    std::vector<CollisionInfo> collisions;
+
     u32 count = rigidBodies.size();
 
     //generate contact infos
@@ -161,28 +163,28 @@ void PhysicsSystem::Update( f32 dt )
             if (collider(rb1,rb2,info)){
                 collisions.push_back(info); //solveur
             }
-
-            //Integrate Forces
-            /*for (RigidBody* rb : rigidBodies){
-                rb->IntegrateForces(dt);
-                // linearVelocity+=a*dt;
-                // angularVelocity += theta*dt;
-            }*/
-
-            // solve contacts
-            for (auto collision : collisions) collision.Solve();
-
-            //integrate velocities
-            /*for(auto &rb : rigidBodies ){
-                rb->IntegrateVelocities(dt); //position+=v*dt; rotation+=w*dt;
-            }*/
-
-            //clear forces
-            for( auto & rb : rigidBodies ){
-                rb->forces = {0.0,0.0};
-                rb->torque = 0.0;
-            }
         }
+    }
+
+    //Integrate Forces
+    for (RigidBody* rb : rigidBodies){
+        rb->IntegrateForces(dt);
+        // linearVelocity+=a*dt;
+        // angularVelocity += theta*dt;
+    }
+
+    // solve contacts
+    for (auto collision : collisions) collision.Solve();
+
+    //integrate velocities
+    for(auto &rb : rigidBodies ){
+        rb->IntegrateVelocities(dt); //position+=v*dt; rotation+=w*dt;
+    }
+
+    //clear forces
+    for( auto & rb : rigidBodies ){
+        rb->forces = {0.0,0.0};
+        rb->torque = 0.0;
     }
 }
 

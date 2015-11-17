@@ -8,8 +8,8 @@
 enum RigidBodyType
 {
     RIGID_BODY_SPHERE,
-    RIGID_BODY_BOX,
-    //RIGID_BODY_WALL, /*added this to differenciate wall from others, walls don't MOVE !!!*/
+    RIGID_BODY_BOX
+    //RIGID_BODY_WALL /*added this to differenciate wall from others, walls don't MOVE !!!*/
 };
 
 struct CollisionInfo{
@@ -84,7 +84,7 @@ struct PhysicsSystem
 
     std::vector<RigidBody*> rigidBodies;
     vec2 gravity;
-    std::vector<CollisionInfo> collisions;
+    //std::vector<CollisionInfo> collisions;
 };
 
 #endif
