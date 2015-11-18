@@ -72,7 +72,7 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
         }
         else if ( (penetrationY<penetrationX) && minAx > maxBx ){
             info.norm = {0,-1};
-            info.p_contact.x=posx2+((posx1-posx20)/2);
+            info.p_contact.x=posx2+((posx1-posx2)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;
         }
 
