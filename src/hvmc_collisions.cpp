@@ -55,27 +55,28 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
         //info.p_contact = {f32(sqrt(pow(box1->position.x - box2->position.x,2))/2),f32(sqrt(pow(box1->position.y - box2->position.y,2))/2)};
         (penetrationX<penetrationY) ? info.dp = penetrationX : info.dp = penetrationY;
 
-        if ((penetrationX<penetrationY) && minBy > maxAy ){
+        if ((penetrationX<penetrationY) && posy2 > posy1 ){
             info.norm = {1,0};
             info.p_contact.y=posy1+((posy2-posy1)/2);
             (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;
         }
-        else if ( (penetrationX<penetrationY) && minAy > maxBy ){
+        else if ( (penetrationX<penetrationY) && posy1 > posy2 ){
             info.norm = {-1,0};
             info.p_contact.y=posy2+((posy1-posy2)/2);
             (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;
         }
-        else if ((penetrationY<penetrationX)  && minBx > maxAx ){
+        else if ((penetrationY<penetrationX)  && posx2 > posx1 ){
             info.norm = {0,1};
             info.p_contact.x=posx1+((posx2-posx1)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;
         }
-        else if ( (penetrationY<penetrationX) && minAx > maxBx ){
+        else if ( (penetrationY<penetrationX) && posx1 > posx2 ){
             info.norm = {0,-1};
             info.p_contact.x=posx2+((posx1-posx2)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;
         }
 
+//        std::cout << "Ça fonctionne : "<<penetrationX<<" "<<penetrationY<<" "<<posx1<<" "<<posy1<<" "<<posx2<<" "<<posy2<<" ("<<info.p_contact.x<<","<<info.p_contact.y<<")"<< std::endl;
 
         return true;
     }
@@ -173,10 +174,22 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
         box->SetKinematic();*/
 
         /*collision infos*/
+//        info.rb1 = box;
+//        info.rb2 = circle;
+//        info.p_contact = {f32(sqrt(pow(box->position.x - circle->position.x,2))/2),f32(sqrt(pow(box->position.y - circle->position.y,2))/2)};
+//        info.dp = 42; //on s'en balaicouilles pour l'instant
+
+
+        /*collision infos*/
         info.rb1 = box;
         info.rb2 = circle;
-        info.p_contact = {f32(sqrt(pow(box->position.x - circle->position.x,2))/2),f32(sqrt(pow(box->position.y - circle->position.y,2))/2)};
-        info.dp = 42; //on s'en balaicouilles pour l'instant
+        //info.p_contact = {f32(sqrt(pow(box->position.x - circle->position.x,2))/2),f32(sqrt(pow(box->position.y - circle->position.y,2))/2)};
+        info.p_contact = {px,py};
+        info.dp = abs(rayon - sqrt(norme2)); // rayon du cercle moins la distance entre le point(du carré) le plus proche du centre du cercle et le centre du cercle
+//        Pas bon ça :
+        info.norm = (circle->position - box->position) / sqrt(pow(box->position.x - circle->position.x,2) + pow(box->position.y - circle->position.y,2));
+
+
 
         return true;
     }
