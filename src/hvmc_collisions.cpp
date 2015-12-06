@@ -37,8 +37,8 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
     f32 posy1 = box1->position.y;
     f32 posx2 = box2->position.x;
     f32 posx1 = box1->position.x;
-    f32 penetrationX=abs(posx1-posx2);
-    f32 penetrationY=abs(posy1-posy2);
+    f32 penetrationX;//=abs(posx1-posx2);
+    f32 penetrationY;//=abs(posy1-posy2);
 
     if ((((minAx>minBx)&&(minAx<maxBx))&&((minAy>minBy)&&(minAy<maxBy)))||
             ((((maxAx>minBx)&&(maxAx<maxBx))&&((maxAy>minBy)&&(maxAy<maxBy))))||
@@ -46,37 +46,45 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
             (((maxAx>minBx)&&(maxAx<maxBx))&&((minAy>minBy)&&(minAy<maxBy)))
             ){
         std::cout << "BOX2BOX" << std::endl;
-        /*box1->velocity = {0.0,0.0};
-        box2->velocity = {0.0,0.0};
-        box1->SetKinematic();box2->SetKinematic();*/
+        //jusqu'ici on est d'accord, après ce gros if des enfers, on a une collision de détectée
+
         /*collision infos*/
         info.rb1 = box1;
         info.rb2 = box2;
-        //info.p_contact = {f32(sqrt(pow(box1->position.x - box2->position.x,2))/2),f32(sqrt(pow(box1->position.y - box2->position.y,2))/2)};
+
+        //calcul penetration en X et Y
+        if ((posx1 > posx2))
+            penetrationX = (maxBx - minAx);
+        else
+            penetrationX = (maxAx - minBx);
+
+        if ((posy1 > posy2))
+            penetrationY = (maxBy - minAy);
+        else
+            penetrationY = (maxAy - minBy);
+
         (penetrationX<penetrationY) ? info.dp = penetrationX : info.dp = penetrationY;
 
         if ((penetrationX<penetrationY) && posy2 > posy1 ){
-            info.norm = {1,0};
+            info.norm = {-1,0};
             info.p_contact.y=posy1+((posy2-posy1)/2);
             (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;
         }
-        else if ( (penetrationX<penetrationY) && posy1 > posy2 ){
-            info.norm = {-1,0};
+        else if ( (penetrationX<penetrationY) && posy1 >= posy2 ){
+            info.norm = {1,0};
             info.p_contact.y=posy2+((posy1-posy2)/2);
             (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;
         }
         else if ((penetrationY<penetrationX)  && posx2 > posx1 ){
-            info.norm = {0,1};
+            info.norm = {0,-1};
             info.p_contact.x=posx1+((posx2-posx1)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;
         }
-        else if ( (penetrationY<penetrationX) && posx1 > posx2 ){
-            info.norm = {0,-1};
+        else if ( (penetrationY<penetrationX) && posx1 >= posx2 ){
+            info.norm = {0,1};
             info.p_contact.x=posx2+((posx1-posx2)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;
         }
-
-//        std::cout << "Ça fonctionne : "<<penetrationX<<" "<<penetrationY<<" "<<posx1<<" "<<posy1<<" "<<posx2<<" "<<posy2<<" ("<<info.p_contact.x<<","<<info.p_contact.y<<")"<< std::endl;
 
         return true;
     }
@@ -84,7 +92,6 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
     {
         return false;
     }
-    //return false;
 }
 //test collision circle to circle
 bool collisionCircle2Circle(RigidBody * circle1, RigidBody * circle2, CollisionInfo & info){
