@@ -73,7 +73,7 @@ RigidBody* PhysicsSystem::AddSphere( vec2 const& pos, f32 radius )
     body->iI = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
-    body->e = 0.3;
+    body->e = 0.7;
 
     body->collider.type = RIGID_BODY_SPHERE;
     body->collider.radius = radius;
@@ -92,7 +92,7 @@ RigidBody* PhysicsSystem::AddBox( vec2 const& pos, vec2 const& dims )
     body->m = 1.f;
     body->position = pos;
     body->velocity = { 0.f, 0.f };
-    body->e = 0.7;
+    body->e = 0.3;
     
     body->collider.type = RIGID_BODY_BOX;
     body->collider.dims = dims;
@@ -113,6 +113,7 @@ RigidBody* PhysicsSystem::AddWall( vec2 const& pos, vec2 const& dims )
     body->collider.dims = dims;
 
     body->velocity = { 0.f, 0.f };
+    body->angularVelocity = 0;
 
     rigidBodies.push_back( body );
     return body;

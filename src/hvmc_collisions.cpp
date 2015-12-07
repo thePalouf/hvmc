@@ -33,7 +33,7 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
     f32 minBx = box2->position.x - taille.x/2;
     f32 maxBx = box2->position.x + taille.x/2;
     f32 maxBy = box2->position.y + taille.y/2;
-    f32 posy2 = box2->position.y ;
+    f32 posy2 = box2->position.y;
     f32 posy1 = box1->position.y;
     f32 posx2 = box2->position.x;
     f32 posx1 = box1->position.x;
@@ -67,23 +67,27 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
 
         info.p_contact.x = 0;
         info.p_contact.y = 0;
-        if ((penetrationX<penetrationY) && posy2 > posy1 ){
-            info.norm = {-1,0};
+        if ((penetrationX<penetrationY) && posx2 > posx1 ){
+            info.norm = {1,0};
+            std::cout << "BOX2BOX -> CAS 1" << std::endl;
             /*info.p_contact.y=posy1+((posy2-posy1)/2);
             (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;*/
         }
-        else if ( (penetrationX<penetrationY) && posy1 >= posy2 ){
-            info.norm = {1,0};
+        else if ( (penetrationX<penetrationY) && posx1 > posx2 ){
+            info.norm = {-1,0};
+            std::cout << "BOX2BOX -> CAS 2" << std::endl;
             /*info.p_contact.y=posy2+((posy1-posy2)/2);
             (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;*/
         }
-        else if ((penetrationY<penetrationX)  && posx2 > posx1 ){
-            info.norm = {0,-1};
+        else if ((penetrationY<penetrationX)  && posy2 > posy1 ){
+            info.norm = {0,1};
+            std::cout << "BOX2BOX -> CAS 3 %f %f" <<posy2<<posy1<< std::endl;
             /*info.p_contact.x=posx1+((posx2-posx1)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;*/
         }
-        else if ( (penetrationY<penetrationX) && posx1 >= posx2 ){
-            info.norm = {0,1};
+        else if ( (penetrationY<penetrationX) && posy1 > posy2 ){
+            info.norm = {0,-1};
+            std::cout << "BOX2BOX -> CAS 4 %f %f"<<posy2<<posy1<< std::endl;
             /*info.p_contact.x=posx2+((posx1-posx2)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;*/
         }
