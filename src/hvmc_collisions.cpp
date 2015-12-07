@@ -1,5 +1,7 @@
 #include "hvmc_collisions.h"
 #include "iostream"
+#include "limits"
+
 //test collision between a and b, gives an info
 bool collider(RigidBody * a, RigidBody * b, CollisionInfo & info){
     if (a->collider.type==RIGID_BODY_BOX)
@@ -91,7 +93,10 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
             /*info.p_contact.x=posx2+((posx1-posx2)/2);
             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;*/
         }
-
+        /*box1->velocity = {0.0,0.0};
+        box2->velocity = {0.0,0.0};*/
+        /*box1->SetKinematic();
+        box2->SetKinematic();*/
         return true;
     }
     else
@@ -142,10 +147,22 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
     f32 maxAx = box->position.x + taille.x/2;
     f32 maxAy = box->position.y + taille.y/2;
 
+    f32 minBy = circle->position.y - circle->collider.radius;
+    f32 minBx = circle->position.x - circle->collider.radius;
+    f32 maxBx = circle->position.x + circle->collider.radius;
+    f32 maxBy = circle->position.y + circle->collider.radius;
+
+    f32 posx1 = box->position.x;
+    f32 posy1 = box->position.y;
+    f32 posx2 = circle->position.x;
+    f32 posy2 = circle->position.y;
+    f32 penetrationX;
+    f32 penetrationY;
+
     f32 py;
     f32 px;
     f32 p;
-    f32 pmin=1000000000;
+    f32 pmin=std::numeric_limits<float>::max();
 
     // Recherche du point p, étant le point le plus près du centre b de la boite
     for (f32 i = minAx; i<= maxAx; i++){
@@ -175,35 +192,43 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
          }
     }
 
-
     f32 norme2 = sqrt( ((px-bx)*(px-bx)) + ((py-by)*(py-by)) );
     norme2 *= norme2;
 
     if (norme2   < rayon2) {
         std::cout << "C2B" << std::endl;
-        /*circle->velocity = {0.0,0.0};
-        box->velocity = {0.0,0.0};
-        circle->SetKinematic();
-        box->SetKinematic();*/
-
-        /*collision infos*/
-//        info.rb1 = box;
-//        info.rb2 = circle;
-//        info.p_contact = {f32(sqrt(pow(box->position.x - circle->position.x,2))/2),f32(sqrt(pow(box->position.y - circle->position.y,2))/2)};
-//        info.dp = 42; //on s'en balaicouilles pour l'instant
-
-
         /*collision infos*/
         info.rb1 = box;
         info.rb2 = circle;
-        //info.p_contact = {f32(sqrt(pow(box->position.x - circle->position.x,2))/2),f32(sqrt(pow(box->position.y - circle->position.y,2))/2)};
-        info.p_contact = {py,px};
+        info.p_contact = {px,py};
         info.dp = abs(rayon - sqrt(norme2)); // rayon du cercle moins la distance entre le point(du carré) le plus proche du centre du cercle et le centre du cercle
-//        Pas bon ça :
-        info.norm = (circle->position - box->position) / sqrt(pow(box->position.x - circle->position.x,2) + pow(box->position.y - circle->position.y,2));
 
+        //j'ai repris la partie de box2box et ça donne des trucs plus cohérents que la dernière fois
+        //calcul penetration en X et Y
+        if ((posx1 > posx2))
+            penetrationX = (maxBx - minAx);
+        else
+            penetrationX = (maxAx - minBx);
 
+        if ((posy1 > posy2))
+            penetrationY = (maxBy - minAy);
+        else
+            penetrationY = (maxAy - minBy);
 
+        (penetrationX<penetrationY) ? info.dp = penetrationX : info.dp = penetrationY;
+
+        if ((penetrationX<penetrationY) && posx2 > posx1 ){
+            info.norm = {1,0};
+        }
+        else if ( (penetrationX<penetrationY) && posx1 > posx2 ){
+            info.norm = {-1,0};
+        }
+        else if ((penetrationY<penetrationX)  && posy2 > posy1 ){
+            info.norm = {0,1};
+        }
+        else if ( (penetrationY<penetrationX) && posy1 > posy2 ){
+            info.norm = {0,-1};
+        }
         return true;
     }
 
