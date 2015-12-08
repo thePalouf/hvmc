@@ -191,17 +191,20 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
              }
          }
     }
+    //vec2 test = {px,py};
+    //distance du p trouve avec le cercle
+    vec2 tposcircle = {px - bx,py-by};
+    //f32 norme2 = sqrt( ((px-bx)*(px-bx)) + ((py-by)*(py-by)) );
+    f32 norme2 = tposcircle.x*tposcircle.x + tposcircle.y* tposcircle.y;
+    //norme2 *= norme2;
 
-    f32 norme2 = sqrt( ((px-bx)*(px-bx)) + ((py-by)*(py-by)) );
-    norme2 *= norme2;
-
-    if (norme2   < rayon2) {
+    if (norme2 < rayon2) {
         std::cout << "C2B" << std::endl;
         /*collision infos*/
         info.rb1 = box;
         info.rb2 = circle;
         info.p_contact = {px,py};
-        info.dp = abs(rayon - sqrt(norme2)); // rayon du cercle moins la distance entre le point(du carré) le plus proche du centre du cercle et le centre du cercle
+        info.dp = sqrt(rayon2 - norme2); // rayon du cercle moins la distance entre le point(du carré) le plus proche du centre du cercle et le centre du cercle
 
         //j'ai repris la partie de box2box et ça donne des trucs plus cohérents que la dernière fois
         //calcul penetration en X et Y
@@ -229,6 +232,8 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
         else if ( (penetrationY<penetrationX) && posy1 > posy2 ){
             info.norm = {0,-1};
         }
+
+
         return true;
     }
 
