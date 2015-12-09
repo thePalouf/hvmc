@@ -67,31 +67,76 @@ bool collisionBox2Box(RigidBody * box1, RigidBody * box2, CollisionInfo & info){
 
         (penetrationX<penetrationY) ? info.dp = penetrationX : info.dp = penetrationY;
 
+
         info.p_contact.x = 0;
         info.p_contact.y = 0;
         if ((penetrationX<penetrationY) && posx2 > posx1 ){
             info.norm = {1,0};
-            std::cout << "BOX2BOX -> CAS 1" << std::endl;
-            /*info.p_contact.y=posy1+((posy2-posy1)/2);
-            (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;*/
+            if(box1->collider.dims.y > 10.f){
+                std::cout << "wall 1 " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx2, posy2};
+            }
+            else if(box2->collider.dims.y>10.f){
+                std::cout << "wall 1bis " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx1, posy1};
+            }
+            else {info.p_contact.x=posx1+(posx2-posx1)/2;
+             (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2);
+            }
+            //std::cout << "BOX2BOX -> CAS 1" << std::endl;
+            info.p_contact.y=posy1+((posy2-posy1)/2);
+            (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;
         }
         else if ( (penetrationX<penetrationY) && posx1 > posx2 ){
             info.norm = {-1,0};
-            std::cout << "BOX2BOX -> CAS 2" << std::endl;
-            /*info.p_contact.y=posy2+((posy1-posy2)/2);
-            (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;*/
+            //std::cout << "BOX2BOX -> CAS 2" << std::endl;
+            if(box1->collider.dims.y>10.f) {
+
+                std::cout << "wall 2 " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx2, posy2};
+            }
+            else if(box2->collider.dims.y>10.f){
+                std::cout << "wall 2bis " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx1, posy1};
+            }
+            else {
+            info.p_contact.x=posx2+((posx1-posx2)/2);
+            (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;
+            }
         }
         else if ((penetrationY<penetrationX)  && posy2 > posy1 ){
             info.norm = {0,1};
-            std::cout << "BOX2BOX -> CAS 3 %f %f" <<posy2<<posy1<< std::endl;
-            /*info.p_contact.x=posx1+((posx2-posx1)/2);
-            (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;*/
+            if(box1->collider.dims.x>10.f)  {
+
+                std::cout << "wall 3 " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx2, posy2};
+            }
+            else if(box2->collider.dims.x>10.f){
+                std::cout << "wall 3bis " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx1, posy1};
+            }
+            else {
+            //std::cout << "BOX2BOX -> CAS 3 %f %f" <<posy2<<posy1<< std::endl;
+            info.p_contact.y=posy1+((posy2-posy1)/2);
+            (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.y=posx1+((posx2-posx1)/2) ;
+            }
         }
         else if ( (penetrationY<penetrationX) && posy1 > posy2 ){
             info.norm = {0,-1};
-            std::cout << "BOX2BOX -> CAS 4 %f %f"<<posy2<<posy1<< std::endl;
-            /*info.p_contact.x=posx2+((posx1-posx2)/2);
-            (posy1>posy2) ? info.p_contact.y=posy2+((posy1-posy2)/2) :info.p_contact.y=posy1+((posy2-posy1)/2) ;*/
+            if(box1->collider.dims.x>10.f)  {
+
+                std::cout << "wall 4 " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx2, posy2};
+            }
+            else if(box2->collider.dims.x>10.f){
+                std::cout << "wall 4bis " << box2->collider.dims.x << std::endl;
+                info.p_contact = {posx1, posy1};
+            }
+            else {
+            //std::cout << "BOX2BOX -> CAS 4 %f %f"<<posy2<<posy1<< std::endl;
+                info.p_contact.y=posy2+((posy1-posy2)/2);
+                (posx1>posx2) ? info.p_contact.x=posx2+((posx1-posx2)/2) :info.p_contact.x=posx1+((posx2-posx1)/2) ;
+            }
         }
         /*box1->velocity = {0.0,0.0};
         box2->velocity = {0.0,0.0};*/
@@ -241,6 +286,10 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
 
     return false;
 }
+
+
+
+
 bool collisionWithWall(RigidBody * rb1, RigidBody * rb2,CollisionInfo & info){
     //std::cout << "WALL-E" << std::endl;
 

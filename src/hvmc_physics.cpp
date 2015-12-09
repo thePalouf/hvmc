@@ -43,7 +43,8 @@ void RigidBody::ApplyImpulse( vec2 const& impulse, vec2 const& contactVector )
 {
     //velocity+=(velocity+impulse),contactVector;
     velocity += impulse*im;
-    angularVelocity += Cross(contactVector,impulse*im);
+
+    angularVelocity += Cross((contactVector-position),impulse*im);
 }
 
 void RigidBody::SetKinematic()
@@ -142,6 +143,15 @@ void CollisionInfo::Solve()
     }
 }
 
+void CollisionInfo::correction(){
+    const f32 seuil = 0.01f;
+    const f32 p = 0.5f;
+    vec2 correction = (std::max(dp - seuil,0.0f) / (rb1->im + rb2->im)) * p *norm;
+
+    rb1->position = rb1->position - (rb1->im * correction);
+    rb2->position = rb2->position + (rb2->im * correction);
+}
+
 void PhysicsSystem::Update( f32 dt )
 {    
     //add gravity
@@ -177,7 +187,10 @@ void PhysicsSystem::Update( f32 dt )
     }
 
     // solve contacts
-    for (auto collision : collisions) collision.Solve();
+    for (auto collision : collisions){
+        collision.Solve();
+        collision.correction();
+    }
 
     //integrate velocities
     for(auto &rb : rigidBodies ){

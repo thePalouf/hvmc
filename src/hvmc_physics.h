@@ -22,6 +22,7 @@ struct CollisionInfo{
     vec2 p_contact;
 
     void Solve();
+    void correction();
 };
 
 struct Collider
