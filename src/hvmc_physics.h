@@ -12,9 +12,8 @@ enum RigidBodyType
     //RIGID_BODY_WALL /*added this to differenciate wall from others, walls don't MOVE !!!*/
 };
 
+//structure collision
 struct CollisionInfo{
-    //be my guest
-    //add whatever you want
     RigidBody * rb1;
     RigidBody * rb2;
     vec2 norm;
@@ -22,7 +21,7 @@ struct CollisionInfo{
     vec2 p_contact;
 
     void Solve();
-    void correction();
+    void correction(); //contre l'effet sable mouvant
 };
 
 struct Collider
@@ -67,7 +66,7 @@ struct RigidBody
     f32 torque = 0.f;
     f32 rotation = 0.f; 
     f32 angularVelocity = 0.f;
-    f32 e = 0.5; //compris entre 0
+    f32 e = 0.5;
 
     Collider collider;
 };
@@ -85,7 +84,6 @@ struct PhysicsSystem
 
     std::vector<RigidBody*> rigidBodies;
     vec2 gravity;
-    //std::vector<CollisionInfo> collisions;
 };
 
 #endif
