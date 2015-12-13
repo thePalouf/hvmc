@@ -206,8 +206,6 @@ bool collisionBox2Circle(RigidBody * box, RigidBody * circle, CollisionInfo & in
         }
         else {
             for (f32 j = minAy; j <= maxAy;){
-
-
                     p=sqrt( pow((i-bx),2) + pow((j-by),2) );
                     if (p<pmin){
                         pmin=p;
